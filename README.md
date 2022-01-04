@@ -53,7 +53,7 @@ Run the file. This may take up to a minute. The PDF of the world and Mauritius w
 To produce the manuscript figure, these were combined and edited further in Inkscape.
 Output: PDF of world with countries containing C.1.2 coloured various shades of purple, PDF of Mauritius in purple
 
-6: Supplementary Figure 1b,c: requires SA_C.1.2_map.R
+6. Supplementary Figure 1b,c: requires SA_C.1.2_map.R
 Dependencies: R, maptools, ggplot2, tidyverse
 No inputs required.
 To run this file, open in Rstudio/IDE of choice.
