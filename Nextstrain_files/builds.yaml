@@ -1,0 +1,102 @@
+# build file to generate C.1.2-focused tree
+
+# Define input files.
+inputs:
+  - name: C12  # C.1.2 sequences
+    metadata: data/c_master/C.1.2_for_tree/C.1.2_for_tree.metadata.tsv
+    sequences: data/c_master/C.1.2_for_tree/C.1.2_for_tree.fasta
+  - name: C1  # C.1 sequences, excluding temporal outliers, outbreak investigation, possible mis-classifications
+    metadata: data/c_master/C.1_no-outbreak_no_recent/C.1_no-outbreak_no-recent_no-USA-early.metadata.tsv
+    sequences: data/c_master/C.1_no-outbreak_no_recent/C.1_no-outbreak_no-recent_no-USA-early.sequences.fasta
+  - name: C11  # C.1.1 sequences
+    metadata: data/c_master/C.1.1.tar
+    sequences: data/c_master/C.1.1.tar
+  - name: SA  # first batch SA sequences - split because too big to download in one
+    metadata: data/c_master/SA_highcov_1June.tar
+    sequences: data/c_master/SA_highcov_1June.tar
+  - name: SA_mid  # second batch SA sequences
+    metadata: data/c_master/SA_highcov_2June_11Aug.tar
+    sequences: data/c_master/SA_highcov_2June_11Aug.tar
+  - name: SA_late  # third (latest) batch SA sequences
+    metadata: data/c_master/SA_highcov_subdate_12Aug_to_11Sep.tar
+    sequences: data/c_master/SA_highcov_subdate_12Aug_to_11Sep.tar
+  - name: references  # wuhan - nextstrain default reference
+    metadata: data/references_metadata.tsv
+    sequences: data/references_sequences.fasta
+  - name: global  # global nextregion download
+    metadata: data/c_master/hcov_global_10Sep.tar.gz
+    sequences: data/c_master/hcov_global_10Sep.tar.gz
+  - name: africa  # africa nextregion download - explicitly included because C.1 from SA, C.1.1 Mozam, so make sure good coverage of Africa
+    metadata: data/c_master/hcov_africa_10Sep.tar.gz
+    sequences: data/c_master/hcov_africa_10Sep.tar.gz
+   
+
+# Build: focuses on C.1.2 samples, looks for related SA samples, includes global context samples
+builds:
+  c_publish:
+    subsampling_scheme: c
+    country: South Africa
+    lineage: C.1.2
+    related: C.1.1
+    ancestor: C.1
+  
+# custom sub-sampling scheme
+subsampling:
+  c:
+    # samples for lineage of interest
+    focal:
+      group_by: "pango_lineage"
+      max_sequences: 160  # have just over 150 sequences, all in include file
+      exclude: "--exclude-where 'pango_lineage!={lineage}'"
+    # make sure most C.1 sequences included to increase likelihood of finding MRCA
+    parent:  
+      group_by: "pango_lineage"
+      max_sequences: 280  
+      exclude: "--exclude-where 'pango_lineage!={ancestor}'"      
+    # samples from other sub-Saharan C lineage (C.1.1)
+    sibling:  
+      group_by: "pango_lineage"
+      max_sequences: 20  
+      exclude: "--exclude-where 'pango_lineage!={related}'"
+    # Contextual samples for country
+    # For SA contextual samples, choice is prioritised by genetic relatedness to C.1.2,
+    # to increase likelihood of finding MRCA/intermediates
+    country_early:
+      group_by: "division year month"
+      max_sequences: 500
+      #sampling_scheme: "--probabilistic-sampling"
+      exclude: "--exclude-where 'country!={country}'"
+      priorities:
+        type: "proximity"
+        focus: "focal"
+    country_late:
+      group_by: "division year month"
+      max_sequences: 2000
+      #sampling_scheme: "--probabilistic-sampling"
+      exclude: "--exclude-where 'country!={country}'"
+      priorities:
+        type: "proximity"
+        focus: "focal"
+    # Contextual samples from the rest of the world, randomly sampled
+    global_early:
+      group_by: "country year month"
+      seq_per_group: 1
+      #sampling_scheme: "--probabilistic-sampling"
+      exclude: "--exclude-where 'country={country}'"
+      #priorities:
+        #type: "proximity"
+        #focus: "focal"
+    global_late:
+      group_by: "country year month"
+      seq_per_group: 5
+      #sampling_scheme: "--probabilistic-sampling"
+      exclude: "--exclude-where 'country={country}'"
+      #priorities:
+        #type: "proximity"
+        #focus: "focal"
+      
+
+# Specify config files (custom) - uses default ncov nextstrain description
+files:
+  auspice_config: "my_profiles/C_paper/my_auspice_config.json"
+  description: "my_profiles/example/my_description.md"
