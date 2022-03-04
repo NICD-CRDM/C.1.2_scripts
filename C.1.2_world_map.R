@@ -1,5 +1,6 @@
-#install.packages('maptools')
-#install.packages('rgeos')
+# This plots a map of the world coloured by number of C.1.2 genomes detected
+# Genome numbers must be manually input on line 21
+# The figure is further edited in software such as Inkscape
 
 setwd('./Desktop/NICD_work/scripts/geography')
 
@@ -12,7 +13,7 @@ library(rnaturalearthdata)
 library(tmap)
 library(sf)
 
-# genomes detected
+# genomes detected - currently manually input
 genomes <- data.frame(country = c("South Africa", "United Kingdom", "New Zealand", "China", "Switzerland", 
                                   "Mauritius", "Democratic Republic of the Congo", "Portugal", "Botswana",
                                   "Zimbabwe", "Swaziland"),
@@ -44,18 +45,12 @@ worldpopmap <- ggplot() +
         #panel.background = element_rect(fill = "transparent"),
         legend.position = 'right')+
   guides(size=guide_legend(direction='vertical'))
-#guides(size=guide_legend(direction='vertical'))
-
-# save plot
-#png('worldmap.png', units='in', width=6, height=4, res=800)
-#plot(worldpopmap)
-#dev.off()
 
 pdf('world_map_C.1.2.pdf')
 plot(worldpopmap)
 dev.off()
 
-
+# add in Inkscape
 mt <- world.joined[world.joined$admin == 'Mauritius',]
 mt.map <- ggplot() +
   geom_sf(data = mt, size=0.5, aes(fill = ifelse(genome_count<=10, genome_count, 10)))+
