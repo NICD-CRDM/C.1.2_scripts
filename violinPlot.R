@@ -1,5 +1,3 @@
-# author: Houriiyah Tegally
-
 library(ggplot2)
 library(ape)
 library(repr)
