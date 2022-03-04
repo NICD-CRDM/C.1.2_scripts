@@ -3,7 +3,7 @@ These scripts were all run on a 2015 MacBook Pro, with the 10.14.6 Mojave OS.
 These were run using python v3.7.14 (visualisation), python v3.8.10 64-bit (Nextstrain) and R v4.0.3
 These have not been tested on other operating systems or software versions
 
-C.1.2 build available at https://nextstrain.org/groups/ngs-sa/COVID19-C.1.2-2022-01-05
+## C.1.2 build available at https://nextstrain.org/groups/ngs-sa/COVID19-C.1.2-2022-01-05
 
 1. Custom NextStrain build: requires files in the Nextstrain_files folder.
 A full NextStrain tutorial can be found at https://docs.nextstrain.org/projects/ncov/en/latest/analysis/index.html
